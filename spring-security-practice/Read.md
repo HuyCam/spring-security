@@ -54,3 +54,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 }
 ```
+## Config Authorization
+Default API behavior
+| API | roles|
+|-----|------|
+|/|all (unauthenticated)|
+|/user| User and Admin roles|
+|/admin| admin|
+
+**HttpSecurity** is used to implement restriction on roles
+
+```
+.hasAnyRole("User","Admin", "SomeRole") // config roles
+
+.hasRole("User") // config a role
+```
+
+```java
+@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+			.antMatchers("/").permitAll() // public url
+			.antMatchers("/admin")		// match a url to match specific role
+			.hasRole("ADMIN")
+			.antMatchers("/user")
+			.hasAnyRole("USER", "ADMIN") // manually allow admin to access user rout
+			.and().formLogin();		
+	}
+``
+
+
+
